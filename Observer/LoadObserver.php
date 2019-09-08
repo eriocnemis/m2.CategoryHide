@@ -7,7 +7,8 @@ namespace Eriocnemis\CategoryHide\Observer;
 
 use \Magento\Framework\Event\ObserverInterface;
 use \Magento\Framework\Event\Observer;
-use \Magento\Catalog\Model\ResourceModel\Category\Collection;
+use \Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
+use \Eriocnemis\CategoryHide\Helper\Data as Helper;
 
 /**
  * Load observer
@@ -20,6 +21,34 @@ class LoadObserver implements ObserverInterface
     const JOIN_FLAG = 'category_hide_filter';
 
     /**
+     * Helper
+     *
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
+     * Flat state
+     *
+     * @var FlatState
+     */
+    protected $flatState;
+
+    /**
+     * Initialize observer
+     *
+     * @param Helper $helper
+     * @param FlatState $flatState
+     */
+    public function __construct(
+        Helper $helper,
+        FlatState $flatState
+    ) {
+        $this->helper = $helper;
+        $this->flatState = $flatState;
+    }
+
+    /**
      * Filtering categories
      *
      * @param Observer $observer
@@ -28,7 +57,7 @@ class LoadObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $collection = $observer->getEvent()->getCategoryCollection();
-        if (!$collection->hasFlag(self::JOIN_FLAG)) {
+        if ($this->helper->isEnabled() && !$collection->hasFlag(self::JOIN_FLAG)) {
             $collection->getSelect()->where(
                 'EXISTS (?)',
                 $this->getCategoryExpression($collection)
@@ -40,10 +69,11 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve category expression
      *
-     * @param Collection $collection
+     * @param $collection
+     * @param string $alias
      * @return \Zend_Db_Expr
      */
-    protected function getCategoryExpression(Collection $collection)
+    protected function getCategoryExpression($collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
@@ -58,14 +88,14 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve product expression
      *
-     * @param Collection $collection
+     * @param $collection
      * @return \Zend_Db_Expr
      */
-    protected function getProductExpression(Collection $collection)
+    protected function getProductExpression($collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
-                ['p' => $collection->getProductTable()],
+                ['p' => $collection->getTable('catalog_category_product')],
                 ['product_id']
             )
             ->where('p.category_id = c.entity_id')
@@ -79,12 +109,13 @@ class LoadObserver implements ObserverInterface
      */
     protected function getConcatExpression()
     {
+        $alias = $this->flatState->isAvailable() ? 'main_table' : 'e';
         return new \Zend_Db_Expr(
             join(
                 ' OR ',
                 [
-                    'c.path LIKE CONCAT(e.path, "/%")',
-                    'c.entity_id = e.entity_id'
+                    'c.path LIKE CONCAT(' . $alias . '.path, "/%")',
+                    'c.entity_id = ' . $alias . '.entity_id'
                 ]
             )
         );
