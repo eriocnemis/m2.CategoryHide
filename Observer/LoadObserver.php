@@ -15,7 +15,7 @@ use \Magento\Catalog\Model\ResourceModel\Category\Collection;
 class LoadObserver implements ObserverInterface
 {
     /**
-     * Filter join flag
+     * Filter join flag name
      */
     const JOIN_FLAG = 'category_hide_filter';
 
