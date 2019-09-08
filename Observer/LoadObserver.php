@@ -67,7 +67,8 @@ class LoadObserver implements ObserverInterface
             (string)$collection->getConnection()->select()->from(
                 ['p' => $collection->getProductTable()],
                 ['product_id']
-            )->where('p.category_id = c.entity_id')
+            )
+            ->where('p.category_id = c.entity_id')
         );
     }
 
