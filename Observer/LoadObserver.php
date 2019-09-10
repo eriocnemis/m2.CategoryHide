@@ -8,6 +8,7 @@ namespace Eriocnemis\CategoryHide\Observer;
 use \Magento\Framework\Event\ObserverInterface;
 use \Magento\Framework\Event\Observer;
 use \Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
+use \Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
 use \Eriocnemis\CategoryHide\Helper\Data as Helper;
 
 /**
@@ -56,6 +57,7 @@ class LoadObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        /** @var CategoryCollection $collection */
         $collection = $observer->getEvent()->getCategoryCollection();
         if ($this->helper->isEnabled() && !$collection->hasFlag(self::JOIN_FLAG)) {
             $collection->getSelect()->where(
@@ -69,11 +71,10 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve category expression
      *
-     * @param $collection
-     * @param string $alias
+     * @param CategoryCollection $collection
      * @return \Zend_Db_Expr
      */
-    protected function getCategoryExpression($collection)
+    protected function getCategoryExpression(CategoryCollection $collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
@@ -88,10 +89,10 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve product expression
      *
-     * @param $collection
+     * @param CategoryCollection $collection
      * @return \Zend_Db_Expr
      */
-    protected function getProductExpression($collection)
+    protected function getProductExpression(CategoryCollection $collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
