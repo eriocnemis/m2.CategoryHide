@@ -5,11 +5,11 @@
  */
 namespace Eriocnemis\CategoryHide\Observer;
 
-use \Magento\Framework\Event\ObserverInterface;
-use \Magento\Framework\Event\Observer;
-use \Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
-use \Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
-use \Eriocnemis\CategoryHide\Helper\Data as Helper;
+use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Event\Observer;
+use Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
+use Eriocnemis\CategoryHide\Helper\Data as Helper;
 
 /**
  * Load observer
