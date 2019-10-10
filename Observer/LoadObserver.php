@@ -9,6 +9,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
 use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
+use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection as FlatCategoryCollection;
 use Eriocnemis\CategoryHide\Helper\Data as Helper;
 
 /**
@@ -57,7 +58,7 @@ class LoadObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        /** @var CategoryCollection $collection */
+        /** @var CategoryCollection|FlatCategoryCollection $collection */
         $collection = $observer->getEvent()->getCategoryCollection();
         if ($this->helper->isEnabled() && !$collection->hasFlag(self::JOIN_FLAG)) {
             $collection->getSelect()->where(
@@ -71,10 +72,10 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve category expression
      *
-     * @param CategoryCollection $collection
+     * @param CategoryCollection|FlatCategoryCollection $collection
      * @return \Zend_Db_Expr
      */
-    protected function getCategoryExpression(CategoryCollection $collection)
+    protected function getCategoryExpression($collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
@@ -89,10 +90,10 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve product expression
      *
-     * @param CategoryCollection $collection
+     * @param CategoryCollection|FlatCategoryCollection $collection
      * @return \Zend_Db_Expr
      */
-    protected function getProductExpression(CategoryCollection $collection)
+    protected function getProductExpression($collection)
     {
         return new \Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
