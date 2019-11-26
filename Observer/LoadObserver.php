@@ -13,7 +13,7 @@ use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection as FlatCategory
 use Eriocnemis\CategoryHide\Helper\Data as Helper;
 
 /**
- * Load observer
+ * Categories load observer
  */
 class LoadObserver implements ObserverInterface
 {
