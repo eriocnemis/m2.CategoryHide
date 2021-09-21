@@ -11,6 +11,7 @@ use Magento\Catalog\Model\Indexer\Category\Flat\State as FlatState;
 use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
 use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection as FlatCategoryCollection;
 use Eriocnemis\CategoryHide\Helper\Data as Helper;
+use Zend_Db_Expr;
 
 /**
  * Categories load observer
@@ -23,18 +24,14 @@ class LoadObserver implements ObserverInterface
     const JOIN_FLAG = 'category_hide_filter';
 
     /**
-     * Helper
-     *
      * @var Helper
      */
-    protected $helper;
+    private $helper;
 
     /**
-     * Flat state
-     *
      * @var FlatState
      */
-    protected $flatState;
+    private $flatState;
 
     /**
      * Initialize observer
@@ -59,7 +56,7 @@ class LoadObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         /** @var CategoryCollection|FlatCategoryCollection $collection */
-        $collection = $observer->getEvent()->getCategoryCollection();
+        $collection = $observer->getEvent()->getData('category_collection');
         if ($this->helper->isEnabled() && !$collection->hasFlag(self::JOIN_FLAG)) {
             $collection->getSelect()->where(
                 'EXISTS (?)',
@@ -73,11 +70,11 @@ class LoadObserver implements ObserverInterface
      * Retrieve category expression
      *
      * @param CategoryCollection|FlatCategoryCollection $collection
-     * @return \Zend_Db_Expr
+     * @return Zend_Db_Expr
      */
-    protected function getCategoryExpression($collection)
+    private function getCategoryExpression($collection)
     {
-        return new \Zend_Db_Expr(
+        return new Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
                 ['c' => $collection->getMainTable()],
                 ['entity_id']
@@ -91,11 +88,11 @@ class LoadObserver implements ObserverInterface
      * Retrieve product expression
      *
      * @param CategoryCollection|FlatCategoryCollection $collection
-     * @return \Zend_Db_Expr
+     * @return Zend_Db_Expr
      */
-    protected function getProductExpression($collection)
+    private function getProductExpression($collection)
     {
-        return new \Zend_Db_Expr(
+        return new Zend_Db_Expr(
             (string)$collection->getConnection()->select()->from(
                 ['p' => $collection->getTable('catalog_category_product')],
                 ['product_id']
@@ -107,12 +104,12 @@ class LoadObserver implements ObserverInterface
     /**
      * Retrieve concat expression
      *
-     * @return \Zend_Db_Expr
+     * @return Zend_Db_Expr
      */
-    protected function getConcatExpression()
+    private function getConcatExpression()
     {
         $alias = $this->flatState->isAvailable() ? 'main_table' : 'e';
-        return new \Zend_Db_Expr(
+        return new Zend_Db_Expr(
             join(
                 ' OR ',
                 [
