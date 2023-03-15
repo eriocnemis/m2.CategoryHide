@@ -21,7 +21,7 @@ class LoadObserver implements ObserverInterface
     /**
      * Filter join flag name
      */
-    const JOIN_FLAG = 'category_hide_filter';
+    private const JOIN_FLAG = 'category_hide_filter';
 
     /**
      * @var Helper

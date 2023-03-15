@@ -16,7 +16,7 @@ class Data extends AbstractHelper
     /**
      * hide empty categories config path
      */
-    const XML_HIDE_EMPTY = 'catalog/navigation/hide_empty';
+    private const XML_HIDE_EMPTY = 'catalog/navigation/hide_empty';
 
     /**
      * Check hidden empty categories functionality should be enabled
@@ -26,7 +26,7 @@ class Data extends AbstractHelper
      */
     public function isEnabled($storeId = null)
     {
-        return $this->isSetFlag(static::XML_HIDE_EMPTY, $storeId);
+        return $this->isSetFlag(self::XML_HIDE_EMPTY, $storeId);
     }
 
     /**
