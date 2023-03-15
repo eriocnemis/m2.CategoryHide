@@ -1,4 +1,4 @@
-# Magento2 CategoryHide
+# Magento2 Category Hide
 
 The extension hide categories in menu when they are empty.
 
