@@ -1,6 +1,0 @@
-parameters:
-    checkExplicitMixedMissingReturn: true
-    checkPhpDocMissingReturn: true
-    reportUnmatchedIgnoredErrors: false
-    ignoreErrors:
-        - '#has no value type specified in iterable type Magento\\Catalog\\Model\\ResourceModel\\Category\\Collection|Magento\\Catalog\\Model\\ResourceModel\\Category\\Flat\\Collection.#'
